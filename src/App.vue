@@ -1,17 +1,23 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <div class="square" @click="fetchMovies">
+      rkbc
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import { mapActions } from 'vuex';
 
 export default {
-  name: "App",
-  components: {
-    HelloWorld
+  name: 'App',
+  components: {},
+  mounted() {
+    console.log('worked');
+    this.fetchMovies();
+  },
+  methods: {
+    ...mapActions('movies', ['fetchMovies'])
   }
 };
 </script>
@@ -24,5 +30,11 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.square {
+  width: 400px;
+  height: 400px;
+  background: black;
 }
 </style>
