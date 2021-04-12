@@ -1,40 +1,74 @@
 <template>
   <div id="app">
-    <div class="square" @click="fetchMovies">
-      rkbc
-    </div>
+    <Loader />
+    <PosterBg :poster="poster" />
+    <Header />
+    <MoviesList :list="moviesList" @changePoster="onChangePoster" />
+    <Pagination
+      :perPage="moviesPerPage"
+      :total="totalMovies"
+      :currentPage="currentPage"
+      @changePage="onChangePage"
+    />
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
+import MoviesList from './components/MoviesList';
+import PosterBg from './components/PosterBg';
+import Pagination from './components/Pagination';
+import Loader from './components/Loader';
+import Header from './components/Header';
 
 export default {
   name: 'App',
-  components: {},
-  mounted() {
-    console.log('worked');
-    this.fetchMovies();
+  components: {
+    MoviesList,
+    PosterBg,
+    Pagination,
+    Loader,
+    Header
+  },
+  data: () => ({
+    poster: ''
+  }),
+  computed: {
+    ...mapGetters('movies', [
+      'moviesList',
+      'currentPage',
+      'moviesPerPage',
+      'totalMovies'
+    ])
   },
   methods: {
-    ...mapActions('movies', ['fetchMovies'])
+    ...mapActions('movies', ['changeCurrentPage']),
+    onChangePoster(poster) {
+      this.poster = poster;
+    },
+    onChangePage(value) {
+      this.$router.push({ query: { page: value } });
+    },
+    changePageQuery({ page = 1 }) {
+      this.changeCurrentPage(Number(page));
+    }
+  },
+  watch: {
+    '$route.query': {
+      handler: 'changePageQuery',
+      immediate: true,
+      deep: true
+    }
   }
 };
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
-.square {
-  width: 400px;
-  height: 400px;
-  background: black;
+  position: relative;
+  padding-bottom: 30px;
 }
 </style>
